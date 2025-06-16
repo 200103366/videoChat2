@@ -126,3 +126,6 @@ CHANNEL_LAYERS = {
         },
     }
 }
+CSRF_TRUSTED_ORIGINS = [
+    'https://videochat2-0sxs.onrender.com',
+]
