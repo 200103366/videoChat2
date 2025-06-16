@@ -1,16 +1,25 @@
-FROM python:3.9-slim
+# Используем свежий Python
+FROM python:3.11-slim
 
+# Отключаем буферизацию вывода
 ENV PYTHONUNBUFFERED=1
 
+# Обновляем систему и ставим необходимые библиотеки
 RUN apt-get update && \
     apt-get install -y gcc libpq-dev netcat-openbsd && \
     rm -rf /var/lib/apt/lists/*
 
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-COPY requirements.txt ./
+# Копируем зависимости
+COPY requirements.txt .
+
+# Устанавливаем зависимости
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+# Копируем оставшийся код
 COPY . .
 
+# Команда запуска
 CMD ["sh", "-c", "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 broma_config.asgi:application"]
