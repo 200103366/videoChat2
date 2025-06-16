@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 my-3">
+
+        <div class="container-xl px-4 mt-4">
+            <div class="row">
+                <div class="col-xl-16">
+                    <!-- Account details card-->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="card mb-4">
+                            <div class="card-header">Account Details</div>
+                            <div class="card-body">
+                                <form>
+                                    <!-- Form Group (username)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users on the site)</label>
+                                        <input class="form-control" id="inputUsername" type="text" placeholder="Enter your username" name="username" value="{{ user.username }}" readonly>
+                                    </div>
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (first name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputFirstName">First name</label>
+                                            <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" name="first_name" value="{{ user.first_name }}">
+                                        </div>
+                                        <!-- Form Group (last name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputLastName">Last name</label>
+                                            <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" name="last_name" value="{{ user.last_name }}">
+                                        </div>
+                                    </div>
+                                    <!-- Form Group (email address)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                        <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" name="email" value="{{ user.email }}">
+                                    </div>
+                                    <!-- Save changes button-->
+                                    <button class="btn btn-primary" type="submit" name="update_profile">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-xl px-4 mt-4">
+            <div class="row">
+                <div class="col-lg-16">
+                    <!-- Change password card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Change Password</div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <!-- Form Group (current password)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="currentPassword">Current Password</label>
+                                    <input class="form-control" id="currentPassword" type="password" placeholder="Enter current password" name="current_password">
+                                </div>
+                                <!-- Form Group (new password)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="newPassword">New Password</label>
+                                    <input class="form-control" id="newPassword" type="password" placeholder="Enter new password" name="new_password">
+                                </div>
+                                <!-- Form Group (confirm password)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="confirmPassword">Confirm Password</label>
+                                    <input class="form-control" id="confirmPassword" type="password" placeholder="Confirm new password" name="repeat_new_password">
+                                </div>
+                                <button class="btn btn-primary" type="submit" name="change_password">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Delete account card-->
+                    <div class="card mb-4">
+                        <form method="post" action="{% url 'core:delete_account' %}">
+                            {% csrf_token %}
+                            <div class="card-header">Delete Account</div>
+                            <div class="card-body">
+                                <p>Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.</p>
+                                <button class="btn btn-danger-soft text-danger" type="submit" onclick="return confirm('Are you sure you want to delete your account?')">I understand, delete my account</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
