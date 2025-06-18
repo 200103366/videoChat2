@@ -21,5 +21,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Копируем оставшийся код
 COPY . .
 
-# Команда запуска
+# Собираем статику (важно!)
+RUN python manage.py collectstatic --noinput
+
+# Команда запуска (миграции + запуск сервера)
 CMD ["sh", "-c", "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 broma_config.asgi:application"]
