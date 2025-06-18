@@ -2,12 +2,16 @@ import environ
 
 from .local import *
 
+# Создаём env instance
 env = environ.Env(
     DEBUG=(bool, False),
 )
 
-SECRET_KEY = env("SECRET_KEY")
+# ЧИТАЕМ переменные из .env или окружения Render
+environ.Env.read_env()  # 🔥 это нужно!
 
+# Настройки
+SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG")
 
 DATABASES = {
