@@ -1,24 +1,22 @@
 import environ
+from pathlib import Path
 
-from .local import *
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Создаём env instance
 env = environ.Env(
     DEBUG=(bool, False),
 )
 
-# ЧИТАЕМ переменные из .env или окружения Render
-environ.Env.read_env()  # 🔥 это нужно!
+environ.Env.read_env(env_file=BASE_DIR / ".env")  # если используешь .env
 
-# Настройки
 SECRET_KEY = env("SECRET_KEY")
-DEBUG = env.bool("DEBUG")
+DEBUG = env.bool("DEBUG", default=False)
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 DATABASES = {
     "default": env.db(),
 }
-
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 REDIS_URL = env("REDIS_URL")
 
