@@ -60,7 +60,8 @@
 
 {% block scripts %}
 <script>
-    const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    const csrfElement = document.querySelector("[name=csrfmiddlewaretoken]");
+    const csrftoken = csrfElement ? csrfElement.value : "";
 
     {% if username %}
     const createConversationDiv = document.querySelector("#create-conversation-div");
@@ -81,6 +82,7 @@
             "X-CSRFToken": csrftoken,
         },
     };
+
 
     const flashMessage = (message, status) => {
         return messagesDiv.insertAdjacentHTML(
