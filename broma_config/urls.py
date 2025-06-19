@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("conversations.urls")),
-    path("", include("accounts.urls")),
-    path("", include("core.urls")),
+    path("accounts/", include("accounts.urls")),       # теперь доступно по /accounts/login/
+    path("conversations/", include("conversations.urls")),
+    path("", include("core.urls")),                    # корневые маршруты пусть будут из core
 ]
