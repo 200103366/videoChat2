@@ -6,7 +6,7 @@
             <div class="card-header text-center lead fw-bold">
                 Log In
             </div>
-            <form method='POST', action="{% url 'core:login' %}">
+            <form method="post" action="{% url 'core:login' %}">
                 {% csrf_token %}
                 <div class="card-body">
                     <div class="mb-3">
