@@ -1,9 +1,9 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts/", include("accounts.urls")),       # теперь доступно по /accounts/login/
+    path("accounts/", include("accounts.urls")),       # ✅ добавь эту строку
     path("conversations/", include("conversations.urls")),
-    path("", include("core.urls")),                    # корневые маршруты пусть будут из core
+    path("", include("core.urls")),
 ]
