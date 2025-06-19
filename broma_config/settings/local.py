@@ -122,6 +122,8 @@ CHANNEL_LAYERS = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = [
+CCSRF_TRUSTED_ORIGINS = [
     'https://videochat2-0sxs.onrender.com',
+    'https://videochat2-0sxs.onrender.com/'.rstrip('/'),  # защита от бага
 ]
+
