@@ -2,6 +2,9 @@
 {% block content %}
 <div class="row justify-content-center">
     {% if username %}
+    <!-- CSRF для авторизованных -->
+    <form style="display: none;">{% csrf_token %}</form>
+
     <div class="col-lg-8 my-3">
         <div class="card">
             <div class="card-header text-center lead fw-bold">
@@ -32,6 +35,9 @@
         </div>
     </div>
     {% else %}
+    <!-- CSRF для гостей -->
+    <form style="display: none;">{% csrf_token %}</form>
+
     <div class="col-lg-8 my-3">
         <div class="card">
             <div class="card-header text-center lead fw-bold">
@@ -53,11 +59,6 @@
 </div>
 {% endblock content %}
 
-<!-- 🔐 ВСТАВЛЯЕМ СКРЫТЫЙ CSRF ТОКЕН -->
-<form style="display: none;">
-    {% csrf_token %}
-</form>
-
 {% block scripts %}
 <script>
     const csrfElement = document.querySelector("[name=csrfmiddlewaretoken]");
@@ -66,7 +67,6 @@
     {% if username %}
     const createConversationDiv = document.querySelector("#create-conversation-div");
     const createConversationBtn = document.querySelector("#create-conversation");
-    const conversationIdInputDiv = document.querySelector("#conversationID");
     const joinConversationBtn = document.querySelector("#join-conversation");
     {% else %}
     const usernameInputDiv = document.querySelector("#username");
@@ -82,7 +82,6 @@
             "X-CSRFToken": csrftoken,
         },
     };
-
 
     const flashMessage = (message, status) => {
         return messagesDiv.insertAdjacentHTML(
@@ -191,10 +190,10 @@
         e.target.innerHTML +=
             ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
-        const conversationIDInput = conversationIdInputDiv.value;
+        const conversationIDInput = document.querySelector("#conversationID").value;
 
         if (!conversationIDInput) {
-            conversationIdInputDiv.classList.add("is-invalid");
+            document.querySelector("#conversationID").classList.add("is-invalid");
             flashMessage("Conversation ID field cannot be empty!", "danger");
             e.target.disabled = false;
             e.target.innerHTML = "Continue";
@@ -224,12 +223,12 @@
                 } else {
                     console.log(error);
                 }
-                conversationIdInputDiv.classList.add("is-invalid");
+                document.querySelector("#conversationID").classList.add("is-invalid");
             });
 
         e.target.disabled = false;
         e.target.innerHTML = "Continue";
-        conversationIdInputDiv.classList.remove("is-invalid");
+        document.querySelector("#conversationID").classList.remove("is-invalid");
     };
     {% endif %}
 </script>
