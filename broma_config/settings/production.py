@@ -82,7 +82,7 @@ CHANNEL_LAYERS = {
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # === Часовой пояс и язык ===
 LANGUAGE_CODE = "en-us"
