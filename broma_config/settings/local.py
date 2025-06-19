@@ -13,7 +13,7 @@ SESSION_COOKIE_SECURE = True
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*', '77.240.39.11', 'qossyl.kz', 'videochat-a8sw.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*', '77.240.39.11', 'qossyl.kz', 'videochat2-0sxs.onrender.com']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
