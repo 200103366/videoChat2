@@ -15,6 +15,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
+# Сборка статики
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --no-input || true && daphne -b 0.0.0.0 -p $PORT broma_config.asgi:application"]
+# Запуск миграций и сервера
+CMD ["sh", "-c", "python manage.py migrate && daphne -b 0.0.0.0 -p $PORT broma_config.asgi:application"]
