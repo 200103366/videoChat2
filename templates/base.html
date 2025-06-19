@@ -91,5 +91,9 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 {% block scripts %}{% endblock scripts %}
+
+<!-- CSRF токен для JavaScript -->
+<form style="display: none;" method="post">{% csrf_token %}</form>
+
 </body>
 </html>
