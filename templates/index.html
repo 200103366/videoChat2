@@ -2,7 +2,6 @@
 {% block content %}
 <div class="row justify-content-center">
     {% if username %}
-    <!-- CSRF для авторизованных -->
     <form style="display: none;">{% csrf_token %}</form>
 
     <div class="col-lg-8 my-3">
@@ -12,8 +11,8 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="conversationID" class="form-label">Conversation ID:</label>
-                    <input type="text" class="form-control" id="conversationID" placeholder="b6559317-dd09-4ed0-9a06-3cb163f31db3">
+                    <label for="conversationIDInput" class="form-label">Conversation ID:</label>
+                    <input type="text" class="form-control" id="conversationIDInput" placeholder="b6559317-dd09-4ed0-9a06-3cb163f31db3">
                 </div>
                 <div class="d-grid gap-2 mt-4">
                     <button type="button" class="btn btn-lg btn-success" id="join-conversation">Join conversation!</button>
@@ -35,7 +34,6 @@
         </div>
     </div>
     {% else %}
-    <!-- CSRF для гостей -->
     <form style="display: none;">{% csrf_token %}</form>
 
     <div class="col-lg-8 my-3">
@@ -86,8 +84,7 @@
     const flashMessage = (message, status) => {
         return messagesDiv.insertAdjacentHTML(
             "beforeend",
-            `
-            <div class="alert alert-${status} alert-dismissible fade show" role="alert">
+            `<div class="alert alert-${status} alert-dismissible fade show" role="alert">
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`
@@ -98,8 +95,7 @@
     pickUsernameBtn.onclick = (e) => {
         e.preventDefault();
         e.target.disabled = true;
-        e.target.innerHTML +=
-            ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        e.target.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
         const usernameInput = usernameInputDiv.value;
 
@@ -153,8 +149,7 @@
     createConversationBtn.onclick = (e) => {
         e.preventDefault();
         e.target.disabled = true;
-        e.target.innerHTML +=
-            ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        e.target.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
         fetch("{% url 'conversations:create-conversation' %}", fetchPostOptions)
             .then((response) => {
@@ -164,8 +159,8 @@
             .then((data) => {
                 createConversationDiv.innerHTML = `
                     <div class="mb-3">
-                        <label for="conversationID" class="form-label">Conversation ID:</label>
-                        <input type="text" class="form-control" id="conversationID" value="${data.data.conversation_id}" disabled>
+                        <label for="conversationIDCreated" class="form-label">Conversation ID:</label>
+                        <input type="text" class="form-control" id="conversationIDCreated" value="${data.data.conversation_id}" disabled>
                     </div>`;
             })
             .catch((error) => {
@@ -187,13 +182,12 @@
     joinConversationBtn.onclick = (e) => {
         e.preventDefault();
         e.target.disabled = true;
-        e.target.innerHTML +=
-            ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        e.target.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
-        const conversationIDInput = document.querySelector("#conversationID").value;
+        const conversationIDInput = document.querySelector("#conversationIDInput").value;
 
         if (!conversationIDInput) {
-            document.querySelector("#conversationID").classList.add("is-invalid");
+            document.querySelector("#conversationIDInput").classList.add("is-invalid");
             flashMessage("Conversation ID field cannot be empty!", "danger");
             e.target.disabled = false;
             e.target.innerHTML = "Continue";
@@ -223,12 +217,12 @@
                 } else {
                     console.log(error);
                 }
-                document.querySelector("#conversationID").classList.add("is-invalid");
+                document.querySelector("#conversationIDInput").classList.add("is-invalid");
             });
 
         e.target.disabled = false;
         e.target.innerHTML = "Continue";
-        document.querySelector("#conversationID").classList.remove("is-invalid");
+        document.querySelector("#conversationIDInput").classList.remove("is-invalid");
     };
     {% endif %}
 </script>
