@@ -10,3 +10,5 @@
  - History page
  - Add Hobbies
  - <!-- trigger render rebuild -->
+ - <!-- fix static rebuild -->
+
