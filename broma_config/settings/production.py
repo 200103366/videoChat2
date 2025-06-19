@@ -93,3 +93,5 @@ USE_TZ = True
 # === Аутентификация ===
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
+CSRF_TRUSTED_ORIGINS = ['https://videochat2-0sxs.onrender.com']
+
