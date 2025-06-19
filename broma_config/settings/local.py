@@ -1,7 +1,7 @@
 from pathlib import Path
-
 from django.contrib.messages import constants as messages
 import os
+import dj_database_url  # добавлено
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -13,7 +13,7 @@ SESSION_COOKIE_SECURE = True
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*', '77.240.39.11', 'qossyl.kz','videochat-a8sw.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*', '77.240.39.11', 'qossyl.kz', 'videochat-a8sw.onrender.com']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -61,14 +61,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "broma_config.wsgi.application"
-
 ASGI_APPLICATION = "broma_config.asgi.application"
 
+# ✅ Обновлённый блок для PostgreSQL через dj_database_url
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -90,17 +91,12 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
@@ -122,10 +118,10 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [REDIS_URL],
-            # "hosts": [(os.environ.get('REDIS_HOST', 'localhost'), os.environ.get('REDIS_PORT', 6379))],
         },
     }
 }
+
 CSRF_TRUSTED_ORIGINS = [
     'https://videochat2-0sxs.onrender.com',
 ]
