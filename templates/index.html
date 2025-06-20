@@ -1,58 +1,72 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Скрытая форма для получения CSRF-токена -->
-<form style="display: none;" method="post">{% csrf_token %}</form>
+<!-- CSRF-токен (для JavaScript) -->
+<form id="csrf-form" style="display: none;" method="post">{% csrf_token %}</form>
+
+<!-- Сообщения Django -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 <div class="row justify-content-center">
     {% if username %}
-    <div class="col-lg-8 my-3">
-        <div class="card">
-            <div class="card-header text-center lead fw-bold">
-                Join a conversation
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="conversationIDInput" class="form-label">Conversation ID:</label>
-                    <input type="text" class="form-control" id="conversationIDInput" placeholder="b6559317-dd09-4ed0-9a06-3cb163f31db3">
-                </div>
-                <div class="d-grid gap-2 mt-4">
-                    <button type="button" class="btn btn-lg btn-success" id="join-conversation">Join conversation!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-8 my-3">
-        <div class="card">
-            <div class="card-header text-center lead fw-bold">
-                Create a conversation
-            </div>
-            <div class="card-body">
-                <div id="create-conversation-div"></div>
-                <div class="d-grid gap-2 mt-4">
-                    <button type="button" class="btn btn-lg btn-info" id="create-conversation">Create conversation</button>
+        <!-- Join Conversation -->
+        <div class="col-lg-8 my-3">
+            <div class="card">
+                <div class="card-header text-center lead fw-bold">Join a conversation</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="conversationIDInput" class="form-label">Conversation ID:</label>
+                        <input type="text" class="form-control" id="conversationIDInput" placeholder="b6559317-dd09-4ed0-9a06-3cb163f31db3">
+                    </div>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-success" id="join-conversation">Join conversation!</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Create Conversation -->
+        <div class="col-lg-8 my-3">
+            <div class="card">
+                <div class="card-header text-center lead fw-bold">Create a conversation</div>
+                <div class="card-body">
+                    <div id="create-conversation-div"></div>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-info" id="create-conversation">Create conversation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
-    <div class="col-lg-8 my-3">
-        <div class="card">
-            <div class="card-header text-center lead fw-bold">
-                Pick a username
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username:</label>
-                    <input type="text" class="form-control" id="username" placeholder="johndoe">
-                    <div id="usernameHelp" class="form-text">Alphanumeric, -, ., _ are allowed. Min 4 characters. Max 25 characters.</div>
-                </div>
-                <div class="d-grid gap-2 mt-4">
-                    <button type="button" class="btn btn-primary" id="pickUsernameBtn">Continue!</button>
+        <!-- Username -->
+        <div class="col-lg-8 my-3">
+            <div class="card">
+                <div class="card-header text-center lead fw-bold">Pick a username</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username:</label>
+                        <input type="text" class="form-control" id="username" placeholder="johndoe">
+                        <div class="form-text">Only letters, numbers, -, _, . allowed. Min 4 characters.</div>
+                    </div>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-primary" id="pickUsernameBtn">Continue!</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     {% endif %}
 </div>
 {% endblock content %}
@@ -63,15 +77,23 @@
     const csrftoken = csrfElement ? csrfElement.value : "";
 
     {% if username %}
-    const createConversationDiv = document.querySelector("#create-conversation-div");
-    const createConversationBtn = document.querySelector("#create-conversation");
-    const joinConversationBtn = document.querySelector("#join-conversation");
+        const createConversationDiv = document.querySelector("#create-conversation-div");
+        const createConversationBtn = document.querySelector("#create-conversation");
+        const joinConversationBtn = document.querySelector("#join-conversation");
     {% else %}
-    const usernameInputDiv = document.querySelector("#username");
-    const pickUsernameBtn = document.querySelector("#pickUsernameBtn");
+        const usernameInputDiv = document.querySelector("#username");
+        const pickUsernameBtn = document.querySelector("#pickUsernameBtn");
     {% endif %}
 
     const messagesDiv = document.querySelector(".messages");
+
+    const flashMessage = (message, status) => {
+        messagesDiv.insertAdjacentHTML("beforeend", `
+            <div class="alert alert-${status} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`);
+    };
 
     const fetchPostOptions = {
         method: "POST",
@@ -81,148 +103,69 @@
         },
     };
 
-    const flashMessage = (message, status) => {
-        return messagesDiv.insertAdjacentHTML(
-            "beforeend",
-            `<div class="alert alert-${status} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`
-        );
-    };
-
-    {% if not username %}
-    pickUsernameBtn.onclick = (e) => {
-        e.preventDefault();
-        e.target.disabled = true;
-        e.target.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-
-        const usernameInput = usernameInputDiv.value;
-
-        if (!usernameInput) {
-            usernameInputDiv.classList.add("is-invalid");
-            flashMessage("Username field cannot be empty!", "danger");
-            e.target.disabled = false;
-            e.target.innerHTML = "Continue";
-            return;
-        }
-
-        if (!/^([a-zA-Z0-9]|[-._](?![-._])){4,25}$/.test(usernameInput)) {
-            usernameInputDiv.classList.add("is-invalid");
-            flashMessage("Username is invalid! Please choose a valid one.", "danger");
-            e.target.disabled = false;
-            e.target.innerHTML = "Continue";
-            return;
-        }
-
-        const body = JSON.stringify({ username: usernameInput });
-
-        fetch("{% url 'accounts:pick-username' %}", { ...fetchPostOptions, body })
-            .then((response) => {
-                if (!response.ok) return Promise.reject(response);
-                return response.json();
-            })
-            .then((data) => {
-                flashMessage(data.message, "success");
-                setTimeout(() => {
-                    window.location.reload(true);
-                }, 1000);
-            })
-            .catch((error) => {
-                if (typeof error.json === "function") {
-                    error.json().then((apiError) => {
-                        flashMessage(apiError.message, "danger");
-                    }).catch((genericError) => {
-                        flashMessage(genericError.statusText, "danger");
-                    });
-                } else {
-                    console.log(error);
-                }
-                usernameInputDiv.classList.add("is-invalid");
-            });
-
-        e.target.disabled = false;
-        e.target.innerHTML = "Continue";
-        usernameInputDiv.classList.remove("is-invalid");
-    };
-    {% else %}
+    {% if username %}
     createConversationBtn.onclick = (e) => {
         e.preventDefault();
         e.target.disabled = true;
-        e.target.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        e.target.innerHTML = "Creating...";
 
         fetch("{% url 'conversations:create-conversation' %}", fetchPostOptions)
-            .then((response) => {
-                if (!response.ok) return Promise.reject(response);
-                return response.json();
-            })
-            .then((data) => {
-                createConversationDiv.innerHTML = `
-                    <div class="mb-3">
-                        <label for="conversationIDCreated" class="form-label">Conversation ID:</label>
-                        <input type="text" class="form-control" id="conversationIDCreated" value="${data.data.conversation_id}" disabled>
-                    </div>`;
-            })
-            .catch((error) => {
-                if (typeof error.json === "function") {
-                    error.json().then((apiError) => {
-                        flashMessage(apiError.message, "danger");
-                    }).catch((genericError) => {
-                        flashMessage(genericError.statusText, "danger");
-                    });
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    createConversationDiv.innerHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">New ID:</label>
+                            <input type="text" class="form-control" value="${data.data.conversation_id}" disabled>
+                        </div>`;
                 } else {
-                    console.log(error);
+                    flashMessage(data.message, "danger");
                 }
+                e.target.disabled = false;
+                e.target.innerHTML = "Create conversation";
             });
-
-        e.target.disabled = false;
-        e.target.innerHTML = "Create conversation";
     };
 
     joinConversationBtn.onclick = (e) => {
         e.preventDefault();
-        e.target.disabled = true;
-        e.target.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-
-        const conversationIDInput = document.querySelector("#conversationIDInput").value;
-
-        if (!conversationIDInput) {
-            document.querySelector("#conversationIDInput").classList.add("is-invalid");
-            flashMessage("Conversation ID field cannot be empty!", "danger");
-            e.target.disabled = false;
-            e.target.innerHTML = "Continue";
+        const convoID = document.querySelector("#conversationIDInput").value;
+        if (!convoID) {
+            flashMessage("Please enter a Conversation ID!", "danger");
             return;
         }
 
-        const body = JSON.stringify({ conversation_id: conversationIDInput });
+        const body = JSON.stringify({ conversation_id: convoID });
 
         fetch("{% url 'conversations:join-conversation' %}", { ...fetchPostOptions, body })
-            .then((response) => {
-                if (!response.ok) return Promise.reject(response);
-                return response.json();
-            })
-            .then((data) => {
-                flashMessage(data.message, "success");
-                setTimeout(() => {
-                    window.location.replace(`${window.location.origin}/conversations/${data.data.conversation_id}/`);
-                }, 500);
-            })
-            .catch((error) => {
-                if (typeof error.json === "function") {
-                    error.json().then((apiError) => {
-                        flashMessage(apiError.message, "danger");
-                    }).catch((genericError) => {
-                        flashMessage(genericError.statusText, "danger");
-                    });
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.href = `/conversations/${data.data.conversation_id}/`;
                 } else {
-                    console.log(error);
+                    flashMessage(data.message, "danger");
                 }
-                document.querySelector("#conversationIDInput").classList.add("is-invalid");
             });
+    };
+    {% else %}
+    pickUsernameBtn.onclick = (e) => {
+        e.preventDefault();
+        const username = usernameInputDiv.value;
+        if (!username) {
+            flashMessage("Username is required!", "danger");
+            return;
+        }
 
-        e.target.disabled = false;
-        e.target.innerHTML = "Continue";
-        document.querySelector("#conversationIDInput").classList.remove("is-invalid");
+        const body = JSON.stringify({ username: username });
+
+        fetch("{% url 'accounts:pick-username' %}", { ...fetchPostOptions, body })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    location.reload();
+                } else {
+                    flashMessage(data.message, "danger");
+                }
+            });
     };
     {% endif %}
 </script>
