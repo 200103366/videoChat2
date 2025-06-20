@@ -10,8 +10,9 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = ['videochat2-production.up.railway.app', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['https://videochat2-production.up.railway.app']
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://videochat2-production.up.railway.app',
+]
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
