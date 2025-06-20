@@ -1,21 +1,26 @@
 import environ
 from pathlib import Path
 
-# === Базовая директория проекта ===
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# === Чтение .env ===
 env = environ.Env(
     DEBUG=(bool, False)
 )
-environ.Env.read_env(env_file=BASE_DIR / ".env")  # работает и локально, и на сервере
+environ.Env.read_env(env_file=BASE_DIR / ".env")
 
-# === Основные настройки ===
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
-ALLOWED_HOSTS = ['videochat2-0sxs.onrender.com', '127.0.0.1', 'localhost']
 
-# === Установленные приложения ===
+ALLOWED_HOSTS = [
+    'videochat2-production.up.railway.app',
+    '127.0.0.1',
+    'localhost'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://videochat2-production.up.railway.app'
+]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -23,13 +28,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.humanize",  # ✅ добавь это
+    "django.contrib.humanize",  # ✅ оставляем
     "channels",
     "accounts",
     "conversations",
 ]
 
-# === Middleware ===
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.security.SecurityMiddleware",
@@ -41,11 +45,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# === URL и ASGI ===
 ROOT_URLCONF = "broma_config.urls"
 ASGI_APPLICATION = "broma_config.asgi.application"
 
-# === Templates ===
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -62,12 +64,10 @@ TEMPLATES = [
     },
 ]
 
-# === База данных ===
 DATABASES = {
-    "default": env.db(),  # Пример: postgres://USER:PASSWORD@HOST:PORT/DBNAME
+    "default": env.db(),  # Railway сам добавит DATABASE_URL в .env
 }
 
-# === Redis и Channels ===
 REDIS_URL = env("REDIS_URL")
 
 CHANNEL_LAYERS = {
@@ -79,20 +79,14 @@ CHANNEL_LAYERS = {
     },
 }
 
-# === Статические файлы ===
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-# === Часовой пояс и язык ===
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# === Аутентификация ===
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
-CSRF_TRUSTED_ORIGINS = ['https://videochat2-0sxs.onrender.com']
-
