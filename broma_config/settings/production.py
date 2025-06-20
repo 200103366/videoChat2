@@ -3,23 +3,14 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
+env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(env_file=BASE_DIR / ".env")
 
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = [
-    'videochat2-production.up.railway.app',
-    '127.0.0.1',
-    'localhost'
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://videochat2-production.up.railway.app'
-]
+ALLOWED_HOSTS = ['videochat2-production.up.railway.app', '127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['https://videochat2-production.up.railway.app']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -28,7 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.humanize",  # ✅ оставляем
+    "django.contrib.humanize",
     "channels",
     "accounts",
     "conversations",
@@ -65,7 +56,7 @@ TEMPLATES = [
 ]
 
 DATABASES = {
-    "default": env.db(),  # Railway сам добавит DATABASE_URL в .env
+    "default": env.db(),  # Установите переменную DATABASE_URL в Railway
 }
 
 REDIS_URL = env("REDIS_URL")
