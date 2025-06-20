@@ -43,7 +43,7 @@ class ConversationConsumer(AsyncWebsocketConsumer):
         self.user: User = self.scope["user"]
         conversation: Conversation = self.scope["conversation"]
 
-        await self.accept("Token")
+        await self.accept()
         await validate_connection(conversation, self.user)
 
         redis.sadd(f"conversation:{self.conversation_id}", self.user.username)
